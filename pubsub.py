@@ -14,6 +14,39 @@ def customCallback(client, userdata, message):
 	print(message.topic)
 	print("--------------\n\n")
 
+
+def getTrafficData():
+	data = {}
+	data['severity'] = 0
+	return data
+
+
+def getWeatherData():
+	data = {}
+	data['temperature'] = 0
+	data['humidity'] = 0
+	data['w_description'] = "Partly Cloudy"
+	return data
+
+
+def getPiData():
+	data = {}
+	data['people_count'] = 0
+	return data
+
+
+def getTimeData():
+	currentdatetime = datetime.now()
+	data = {}
+	data["id"]= str(currentdatetime)
+	data["month"]= currentdatetime.month
+	data["weekday"]= currentdatetime.weekday()
+	data["hour"]= currentdatetime.hour
+	data["minute"]= currentdatetime.minute
+	data['day'] = currentdatetime.day
+	return data;
+
+
 # Usage
 usageInfo = """Usage:
 
@@ -116,29 +149,17 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
-myAWSIoTMQTTClient.subscribe("sdk/test/Python", 1, customCallback)
+TOPIC = "sdk/test/Python"
+myAWSIoTMQTTClient.subscribe(TOPIC, 1, customCallback)
 time.sleep(2)
 
 # Publish to the same topic in a loop forever
-loopCount = 0
-count = 0
-severity = 0
 while True:
-	currentdatetime = datetime.now()
 	data = {}
-	data["timeId"]= str(currentdatetime)
-	data["month"]= currentdatetime.month
-	data["weekday"]= currentdatetime.weekday()
-	data["hour"]= currentdatetime.hour
-	data["minute"]= currentdatetime.minute
-	data['day'] = currentdatetime.day
-	data['actual_count'] = count
-	data['traffic_severity'] = severity
-	data['temperature'] = 0
-	data['humidity'] = 0
-	data['w_description'] = "Partly Cloudy"
+	data['time'] = getTimeData()
+	data['pi'] = getPiData()
+	data['weather'] = getWeatherData()
+	data['traffic'] = getTrafficData()
 
-
-	myAWSIoTMQTTClient.publish("sdk/test/Python", json.dumps(data), 1)
-	loopCount += 1
+	myAWSIoTMQTTClient.publish(TOPIC, json.dumps(data), 1)
 	time.sleep(5)
