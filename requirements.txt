@@ -4,8 +4,13 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+certifi==2017.4.17        # via requests
+chardet==3.0.3            # via requests
 datetime==4.2
+idna==2.5                 # via requests
 logging==0.4.9.6
 pyowm==2.6.1
 pytz==2017.2              # via datetime
+requests==2.17.3
+urllib3==1.21.1           # via requests
 zope.interface==4.4.1     # via datetime

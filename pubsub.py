@@ -6,6 +6,7 @@ import getopt
 from datetime import datetime
 import json
 import weather
+import traffic
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
@@ -14,12 +15,6 @@ def customCallback(client, userdata, message):
 	print("from topic: ")
 	print(message.topic)
 	print("--------------\n\n")
-
-
-def getTrafficData():
-	data = {}
-	data['severity'] = 0
-	return data
 
 
 def getPiData():
@@ -151,8 +146,8 @@ while True:
 	data = {}
 	data['time'] = getTimeData()
 	data['pi'] = getPiData()
-	data['weather'] = weather.get_data()
-	data['traffic'] = getTrafficData()
+	data['weather'] = weather.get_weather_data()
+	data['traffic'] = traffic.get_traffic_data()
 
 	myAWSIoTMQTTClient.publish(TOPIC, json.dumps(data), 1)
 	time.sleep(5)
