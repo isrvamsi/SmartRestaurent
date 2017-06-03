@@ -4,4 +4,8 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+datetime==4.2
+logging==0.4.9.6
 pyowm==2.6.1
+pytz==2017.2              # via datetime
+zope.interface==4.4.1     # via datetime
