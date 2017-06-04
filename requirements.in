@@ -1,0 +1,4 @@
+pyowm
+logging
+datetime
+requests
