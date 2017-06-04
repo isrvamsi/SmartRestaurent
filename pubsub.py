@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import sys
 import logging
@@ -9,6 +11,7 @@ import weather
 import traffic
 
 # Custom MQTT message callback
+
 def customCallback(client, userdata, message):
 	print("Received a new message: ")
 	print(message.payload)
@@ -17,13 +20,13 @@ def customCallback(client, userdata, message):
 	print("--------------\n\n")
 
 
-def getPiData():
+def get_pi_data():
 	data = {}
 	data['people_count'] = 0
 	return data
 
 
-def getTimeData():
+def get_calendar_data():
 	currentdatetime = datetime.now()
 	data = {}
 	data["id"]= str(currentdatetime)
@@ -112,7 +115,7 @@ if missingConfiguration:
 # Configure logging
 logger = logging.getLogger("AWSIoTPythonSDK.core")
 logger.setLevel(logging.DEBUG)
-streamHandler = logging.StreamHandler()
+streamHandler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 streamHandler.setFormatter(formatter)
 logger.addHandler(streamHandler)
@@ -138,16 +141,15 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
 TOPIC = "sdk/test/Python"
-myAWSIoTMQTTClient.subscribe(TOPIC, 1, customCallback)
-time.sleep(2)
+# myAWSIoTMQTTClient.subscribe(TOPIC, 1, customCallback)
+# time.sleep(2)
 
-# Publish to the same topic in a loop forever
-while True:
-	data = {}
-	data['time'] = getTimeData()
-	data['pi'] = getPiData()
-	data['weather'] = weather.get_weather_data()
-	data['traffic'] = traffic.get_traffic_data()
+data = {}
+data['time'] = get_calendar_data()
+data['pi'] = get_pi_data()
+data['weather'] = weather.get_weather_data()
+data['traffic'] = traffic.get_traffic_data()
 
-	myAWSIoTMQTTClient.publish(TOPIC, json.dumps(data), 1)
-	time.sleep(5)
+myAWSIoTMQTTClient.publish(TOPIC, json.dumps(data), 1)
+
+myAWSIoTMQTTClient.disconnect()
