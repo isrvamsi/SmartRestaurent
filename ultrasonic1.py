@@ -1,15 +1,6 @@
 #!/usr/bin/python
-#+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#|R|a|s|p|b|e|r|r|y|P|i|-|S|p|y|.|c|o|.|u|k|
-#+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#
-# ultrasonic_1.py
-# Measure distance using an ultrasonic module
-#
-# Author : Matt Hawkins
-# Date   : 09/01/2013
-
-# Import required Python libraries
+import signal
+import sys
 import time
 import RPi.GPIO as GPIO
 from display import TM1637
@@ -20,7 +11,6 @@ THRESHOULD2 = 80
 # Use BCM GPIO references
 # instead of physical pin numbers
 GPIO.setmode(GPIO.BCM)
-GPIO.cleanup()
 # Define GPIO to use on Pi
 GPIO_TRIGGER1 = 23
 GPIO_ECHO1    = 24
@@ -35,23 +25,29 @@ GPIO.setup(GPIO_TRIGGER2,GPIO.OUT)  # Trigger
 GPIO.setup(GPIO_ECHO1,GPIO.IN)      # Echo
 GPIO.setup(GPIO_ECHO2,GPIO.IN)      # Echo
 
+
+def signal_handler(signal, frame):
+    GPIO.cleanup()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
 #Variables for people count
-count = 1000
 time1 = 0
 time2 =0
-sensor1= False
-sensor2 =False
+sensor1 = False
+sensor2 = False
 people =0
 #"""Confirm the display operation"""
 display = TM1637(CLK=21, DIO=20, brightness=1.0)
-
 display.Clear()
 
-digits = [1, 2, 3, 4,5,6,7,8]
+digits = [1, 2, 3, 4]
 display.Show(digits)
-time.sleep(1)
-display.Clear()
+time.sleep(3)
 
+display.Clear()
 
 #Init complete
 while True:
@@ -146,7 +142,7 @@ while True:
     lastactive1 = time.time()-time1
     lastactive2 = time.time()-time2
     #print "last active 1 = %d lastactive2 =%d"%lastactive1,lastactive2
-    if(lastactive1<5 and lastactive2<5):
+    if lastactive1<5 and lastactive2 < 5 :
         #print "Both sensors active"   
         if(time1>time2):
            people =people-1
@@ -159,6 +155,7 @@ while True:
     people =0
   #print "people = %d "%people
   display.ShowInt(people)
+ 
 
 #End of measurements
 # Reset GPIO settings
