@@ -109,34 +109,7 @@ def interrupt_handler(signal, frame):
     GPIO.cleanup()
     sys.exit(0)
 
-signal.signal(signal.SIGINT, interrupt_handler)
-
-
-#Variables for people count
-time1 = 0
-time2 =0
-sensor1 = False
-sensor2 = False
-people =0
-#"""Confirm the display operation"""
-display = TM1637(CLK=21, DIO=20, brightness=1.0)
-display.Clear()
-
-digits = [1, 2, 3, 4]
-display.Show(digits)
-time.sleep(3)
-
-display.Clear()
-PUBLISHING_TIME = 2
-#Init complete
-starttime=time.time()
-people = 0
-while True:
-  if (time.time() - starttime) > (60.0 * PUBLISHING_TIME):
-    starttime = time.time()
-    pubsub.main(host, privateKeyPath,certificatePath, rootCAPath, useWebsocket, people)
-    print "published to dynamodb"
-
+def getSensorStatus(GPIO_TRIGGER, GPIO_ECHO, time1):
   # Set trigger to False (Low)
   GPIO.output(GPIO_TRIGGER1, False)
 
@@ -144,15 +117,15 @@ while True:
   time.sleep(0.001)
 
   # Send 10us pulse to trigger
-  GPIO.output(GPIO_TRIGGER1, True)
+  GPIO.output(GPIO_TRIGGER, True)
   time.sleep(0.00001)
-  GPIO.output(GPIO_TRIGGER1, False)
+  GPIO.output(GPIO_TRIGGER, False)
   start1 = time.time()
 
-  while GPIO.input(GPIO_ECHO1) == 0:
+  while GPIO.input(GPIO_ECHO) == 0:
     start1 = time.time()
 
-  while GPIO.input(GPIO_ECHO1) == 1:
+  while GPIO.input(GPIO_ECHO) == 1:
     stop1 = time.time()
 
   # Calculate pulse length
@@ -172,56 +145,46 @@ while True:
     #print "Sensor1 active"
     #print time1
   else:  
+     sensor1 = False
      lastactive1 = time.time()-time1
      #print "Last active %d",lastactive1
      if(time.time()-time1 > 2):
           sensor1 = False
           #print "Sensor1 deactive"      
-           
-  # ==============================================
-   # Allow module to settle
-  #time.sleep(0.5)
+  return sensor1, time1
 
-  # Set trigger to False (Low)
-  GPIO.output(GPIO_TRIGGER2, False)
 
-  # Allow module to settle
-  time.sleep(0.01)
+signal.signal(signal.SIGINT, interrupt_handler)
 
-  # Send 10us pulse to trigger
-  GPIO.output(GPIO_TRIGGER2, True)
-  time.sleep(0.00001)
-  GPIO.output(GPIO_TRIGGER2, False)
-  start2 = time.time()
 
-  while GPIO.input(GPIO_ECHO2)==0:
-   start2 = time.time()
+#Variables for people count
+time1 = 0
+time2 = 0
+people =0
+#"""Confirm the display operation"""
+display = TM1637(CLK=21, DIO=20, brightness=1.0)
+display.Clear()
 
-  while GPIO.input(GPIO_ECHO2)==1:
-    stop2 = time.time()
+digits = [1, 2, 3, 4]
+display.Show(digits)
+time.sleep(3)
 
-  # Calculate pulse length
-  elapsed2 = stop2-start2
+display.Clear()
+PUBLISHING_TIME = 2
+#Init complete
+starttime=time.time()
+people = 0
 
-  # Distance pulse travelled in that time is time
-  # multiplied by the speed of sound (cm/s)
-  distance2 = elapsed2 * 34300
 
-  # That was the distance there and back so halve the value
-  distance2 = distance2 / 2
-  #print "elapsed2 : %f "% elapsed2
-  #print "Distance2 : %.1f" % distance2
-  #print "\n=====================\n"
-  if(distance2 < THRESHOULD1):
-    sensor2 =True
-    time2 = time.time()
-    #print "Sensor2 active"
-    #print time2
-  else : 
-     if(time.time()-time2 > 2):
-          sensor2 = False
-          #print "Sensor2 deactive"
 
+while True:
+  if (time.time() - starttime) > (60.0 * PUBLISHING_TIME):
+    starttime = time.time()
+    pubsub.main(host, privateKeyPath,certificatePath, rootCAPath, useWebsocket, people)
+    print "published to dynamodb"
+
+  sensor1, time1 = getSensorStatus(GPIO_TRIGGER1, GPIO_ECHO1, time1)
+  sensor2, time2 = getSensorStatus(GPIO_TRIGGER2, GPIO_ECHO2, time2)
   #People detection logic
   if(sensor1 == False and sensor2 == False and time1 !=0 and time2 !=0):
     lastactive1 = time.time()-time1
@@ -234,8 +197,7 @@ while True:
         else:
            people = people +1
         time1 = 0
-        time2 = 0
-  
+        time2 = 0 
   if(people<0):
     people =0
   #print "people = %d "%people
