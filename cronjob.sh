@@ -1,0 +1,1 @@
+python /home/pi/Documents/vivek/aws/smart-restaurant/ultrasonic.py -e a2svrkp8qkppxd.iot.us-west-2.amazonaws.com -r /home/pi/Documents/vivek/aws/root-CA.crt -c /home/pi/Documents/vivek/aws/JavaCity.cert.pem -k /home/pi/Documents/vivek/aws/JavaCity.private.key
