@@ -84,8 +84,8 @@ if __name__ == '__main__':
 		exit(2)
 
 
-THRESHOULD1 = 80
-THRESHOULD2 = 80
+THRESHOULD1 = 100
+THRESHOULD2 = 100
 
 # Use BCM GPIO references
 # instead of physical pin numbers
@@ -106,10 +106,14 @@ GPIO.setup(GPIO_ECHO2,GPIO.IN)      # Echo
 
 
 def interrupt_handler(signal, frame):
-    GPIO.cleanup()
-    sys.exit(0)
+	# Reset GPIO settings
+	GPIO.cleanup()
+	sys.exit(0)
 
-def getSensorStatus(GPIO_TRIGGER, GPIO_ECHO, time1):
+# End of measurements
+signal.signal(signal.SIGINT, interrupt_handler)
+
+def getSensorStatus(GPIO_TRIGGER, GPIO_ECHO, time1, sensor1):
   # Set trigger to False (Low)
   GPIO.output(GPIO_TRIGGER1, False)
 
@@ -136,7 +140,7 @@ def getSensorStatus(GPIO_TRIGGER, GPIO_ECHO, time1):
   distance1 = elapsed1 * 34300
 
   # That was the distance there and back so halve the value
-  distance1 = distance1 / 2
+  distance1 = distance1 * 0.5
   #print "elapsed1 : %f" % elapsed1
   #print "Distance1 : %.1f" % distance1
   if(distance1 < THRESHOULD1):
@@ -144,22 +148,21 @@ def getSensorStatus(GPIO_TRIGGER, GPIO_ECHO, time1):
     time1 = time.time()
     #print "Sensor1 active"
     #print time1
-  else:  
-     sensor1 = False
-     lastactive1 = time.time()-time1
-     #print "Last active %d",lastactive1
+  else:
      if(time.time()-time1 > 2):
           sensor1 = False
+     if(time.time()-time1 > 5):
+          sensor1 = False
+          time1 =0
           #print "Sensor1 deactive"      
   return sensor1, time1
-
-
-signal.signal(signal.SIGINT, interrupt_handler)
 
 
 #Variables for people count
 time1 = 0
 time2 = 0
+sensor1 = False       
+sensor2 = False       
 people =0
 #"""Confirm the display operation"""
 display = TM1637(CLK=21, DIO=20, brightness=1.0)
@@ -170,7 +173,7 @@ display.Show(digits)
 time.sleep(3)
 
 display.Clear()
-PUBLISHING_TIME = 2
+PUBLISHING_TIME = 2 * 60.0 # Time in seconds
 #Init complete
 starttime=time.time()
 people = 0
@@ -178,15 +181,23 @@ people = 0
 
 
 while True:
-  if (time.time() - starttime) > (60.0 * PUBLISHING_TIME):
-    starttime = time.time()
+  current_time = time.time()
+  if (current_time - starttime) > PUBLISHING_TIME :
+    starttime = current_time
     pubsub.main(host, privateKeyPath,certificatePath, rootCAPath, useWebsocket, people)
     print "published to dynamodb"
 
-  sensor1, time1 = getSensorStatus(GPIO_TRIGGER1, GPIO_ECHO1, time1)
-  sensor2, time2 = getSensorStatus(GPIO_TRIGGER2, GPIO_ECHO2, time2)
-  #People detection logic
+  sensor1, time1 = getSensorStatus(GPIO_TRIGGER1, GPIO_ECHO1, time1, sensor1)
+  if(sensor1 == True):
+   print ("sensor1 = %d, time1= %s" % (sensor1,time1)) 
+ 
+  sensor2, time2 = getSensorStatus(GPIO_TRIGGER2, GPIO_ECHO2, time2, sensor2)
+  if(sensor2 == True):
+   print ("sensor2 = %d, time2= %s" % (sensor2,time2))
+
+#People detection logic
   if(sensor1 == False and sensor2 == False and time1 !=0 and time2 !=0):
+    print "Person detected"
     lastactive1 = time.time()-time1
     lastactive2 = time.time()-time2
     #print "last active 1 = %d lastactive2 =%d"%lastactive1,lastactive2
@@ -194,8 +205,10 @@ while True:
         #print "Both sensors active"   
         if(time1>time2):
            people =people-1
+           print "Dec people count"
         else:
            people = people +1
+           print "Inc people count"
         time1 = 0
         time2 = 0 
   if(people<0):
@@ -203,6 +216,4 @@ while True:
   #print "people = %d "%people
   display.ShowInt(people)
  
-# End of measurements
-# Reset GPIO settings
-GPIO.cleanup()
+
