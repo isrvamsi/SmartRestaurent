@@ -8,6 +8,8 @@ $.ajaxSetup({
 // Google Map - Homepage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+restaurantsData = {};
+box_texts = [];
 function createHomepageGoogleMap(_latitude,_longitude){
     setMapHeight();
     if( document.getElementById('map') != null ){
@@ -21,6 +23,25 @@ function createHomepageGoogleMap(_latitude,_longitude){
             });
             var i;
             var newMarkers = [];
+
+            $.ajaxSetup({
+                async: false
+            });
+
+            //ajax call here
+
+            for (i = 0; i < locations.length; i++){
+                $.getJSON(locations[i][2], function (occupancy) {
+                    console.log('fetched value');
+                    console.log(occupancy);
+                    restaurantsData[locations[i][2]] = occupancy;
+                })
+            }
+
+            $.ajaxSetup({
+                async: true
+            });
+
             for (i = 0; i < locations.length; i++) {
                 var pictureLabel = document.createElement("img");
                 pictureLabel.src = locations[i][7];
@@ -38,6 +59,7 @@ function createHomepageGoogleMap(_latitude,_longitude){
                     closeBoxURL: "assets/img/close-btn.png",
                     infoBoxClearance: new google.maps.Size(1, 1)
                 };
+                box_texts.push(boxText);
                 var marker = new MarkerWithLabel({
                     title: locations[i][0],
                     position: new google.maps.LatLng(locations[i][3], locations[i][4]),
@@ -48,11 +70,19 @@ function createHomepageGoogleMap(_latitude,_longitude){
                     labelClass: "marker-style"
                 });
                 newMarkers.push(marker);
+                var occupancy_file = locations[i][2];
+                console.log(occupancy_file);
+                var occupancy = 'NA';
+                var selectedTime = $("select[name='time'] option:selected")[0].value;
+                var selectedDay =  $("select[name='day'] option:selected")[0].value;
+                var restaurantData = restaurantsData[occupancy_file];
+                occupancy = restaurantData[selectedDay][selectedTime];
+                console.log(occupancy);
                 boxText.innerHTML =
                     '<div class="infobox-inner">' +
                         '<a href="' + locations[i][5] + '">' +
                         '<div class="infobox-image" style="position: relative">' +
-                        '<img src="' + locations[i][6] + '">' + '<div><span class="infobox-price">' + locations[i][2] + '</span></div>' +
+                        '<img src="' + locations[i][6] + '">' + '<div><span class="infobox-price">' + occupancy + '</span></div>' +
                         '</div>' +
                         '</a>' +
                         '<div class="infobox-description">' +
@@ -183,6 +213,28 @@ function initMap(propertyId) {
     });
 }
 
+function listener_search_box() {
+    for(var i = 0; i< box_texts.length; i++){
+        var selectedTime = $("select[name='time'] option:selected")[0].value;
+        var selectedDay =  $("select[name='day'] option:selected")[0].value;
+        var restaurantData = restaurantsData[locations[i][2]];
+        var occupancy = restaurantData[selectedDay][selectedTime];
+        console.log(occupancy);
+        box_texts[i].innerHTML =
+            '<div class="infobox-inner">' +
+            '<a href="' + locations[i][5] + '">' +
+            '<div class="infobox-image" style="position: relative">' +
+            '<img src="' + locations[i][6] + '">' + '<div><span class="infobox-price">' + occupancy + '</span></div>' +
+            '</div>' +
+            '</a>' +
+            '<div class="infobox-description">' +
+            '<div class="infobox-title"><a href="'+ locations[i][5] +'">' + locations[i][0] + '</a></div>' +
+            '<div class="infobox-location">' + locations[i][1] + '</div>' +
+            '</div>' +
+            '</div>';
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Google Map - Contact
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,6 +260,8 @@ function contactUsMap(){
         labelClass: "marker-style"
     });
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // OpenStreetMap - Homepage
@@ -242,6 +296,10 @@ function createHomepageOSM(_latitude,_longitude){
                     title: title,
                     icon: _icon
                 });
+                var occupancy_file = locations[i][2];
+                console.log(occupancy_file);
+                var occupancy = 10;
+                console.log(occupancy);
                 marker.bindPopup(
                     '<div class="property">' +
                         '<a href="' + locations[i][5] + '">' +
@@ -250,7 +308,7 @@ function createHomepageOSM(_latitude,_longitude){
                             '</div>' +
                             '<div class="overlay">' +
                                 '<div class="info">' +
-                                    '<div class="tag price"> ' + locations[i][2] + '</div>' +
+                                    '<div class="tag price">' + occupancy + 'people' + '</div>' +
                                     '<h3>' + locations[i][0] + '</h3>' +
                                     '<figure>' + locations[i][1] + '</figure>' +
                                 '</div>' +

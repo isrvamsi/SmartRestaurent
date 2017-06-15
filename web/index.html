@@ -467,6 +467,12 @@
 
     var time_of_day = findPartOfDay();
     $("select[name='time'] option[value="+time_of_day+"]").prop("selected", true);
+
+    document.getElementById('form-map').addEventListener('submit', function(evt){
+        evt.preventDefault();
+        listener_search_box();
+    })
+
 </script>
 </body>
 </html>
