@@ -1,10 +1,10 @@
 var locations = [
-    ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.87, 2.29, "property-detail.html", "assets/img/properties/property-01.jpg", "assets/img/property-types/apartment.png"],
-    ['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.866876, 2.309639, "property-detail.html", "assets/img/properties/property-02.jpg", "assets/img/property-types/apartment.png"],
-
-    ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.874796, 2.299275, "property-detail.html", "assets/img/properties/property-03.jpg", "assets/img/property-types/construction-site.png"],
-    ['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.864194, 2.288868, "property-detail.html", "assets/img/properties/property-04.jpg", "assets/img/property-types/cottage.png"],
-    ['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.881187, 2.276938, "property-detail.html", "assets/img/properties/property-06.jpg", "assets/img/property-types/garage.png"],
+    ['The Anteatery', "4001 Mesa Rd Irvine, CA 92617", "$36,000", 33.650884, -117.845629, "https://www.yelp.com/biz/the-anteatery-irvine", "assets/img/restaurents/anteatery.jpg", "assets/img/property-types/apartment.png"],
+    ['Cha For Tea', "4187 Campus Dr Ste M173 Irvine, CA 92612", "$28,000", 33.650670, -117.838981, "https://www.yelp.com/biz/cha-for-tea-irvine-9", "assets/img/restaurents/cha4tea.jpg", "assets/img/property-types/apartment.png"],
+    ['Panda Express', "A232 Student Ctr Irvine, CA 92697", "$36,000",33.649212, -117.842492, "https://www.yelp.com/biz/panda-express-irvine-5", "assets/img/restaurents/panda.jpg", "assets/img/property-types/apartment.png"],
+    ['In-N-Out Burger', "4115 Campus Dr Irvine, CA 92612", "$28,000", 33.650238, -117.840712, "https://www.yelp.com/biz/in-n-out-burger-irvine?osq=In-N-Out+Burger", "assets/img/restaurents/innout.jpg", "assets/img/property-types/apartment.png"],
+    /*
+	['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.881187, 2.276938, "property-detail.html", "assets/img/properties/property-06.jpg", "assets/img/property-types/garage.png"],
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.859098, 2.423515, "property-detail.html", "assets/img/properties/property-08.jpg", "assets/img/property-types/houseboat.png"],
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.872296, 2.287796, "property-detail.html", "assets/img/properties/property-07.jpg", "assets/img/property-types/land.png"],
 
@@ -31,7 +31,6 @@ var locations = [
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.893534, 2.276616, "property-detail.html", "assets/img/properties/property-02.jpg", "assets/img/property-types/construction-site.png"],
     ['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.872570, 2.237349, "property-detail.html", "assets/img/properties/property-03.jpg", "assets/img/property-types/cottage.png"],
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.879344, 2.226191, "property-detail.html", "assets/img/properties/property-04.jpg", "assets/img/property-types/garage.png"],
-     /*
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.860374, 2.222242, "property-detail.html", "assets/img/properties/property-05.jpg", "assets/img/property-types/condominium.png"],
     ['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.845917, 2.265673, "property-detail.html", "assets/img/properties/property-06.jpg", "assets/img/property-types/cottage.png"],
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.843092, 2.306013, "property-detail.html", "assets/img/properties/property-07.jpg", "assets/img/property-types/warehouse.png"],
