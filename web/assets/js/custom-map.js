@@ -24,23 +24,19 @@ function createHomepageGoogleMap(_latitude,_longitude){
             var i;
             var newMarkers = [];
 
-            $.ajaxSetup({
-                async: false
-            });
-
-            //ajax call here
-
             for (i = 0; i < locations.length; i++){
-                $.getJSON(locations[i][2], function (occupancy) {
-                    console.log('fetched value');
-                    console.log(occupancy);
-                    restaurantsData[locations[i][2]] = occupancy;
-                })
+                $.ajax({
+                    url: locations[i][2],
+                    dataType: 'json',
+                    async: false,
+                    success: function(data) {
+                        console.log('fetched value');
+                        console.log(data);
+                        restaurantsData[locations[i][2]] = data;
+                    }
+                });
             }
 
-            $.ajaxSetup({
-                async: true
-            });
 
             for (i = 0; i < locations.length; i++) {
                 var pictureLabel = document.createElement("img");
