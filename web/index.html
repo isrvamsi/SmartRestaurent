@@ -445,6 +445,28 @@
     $(window).load(function(){
         initializeOwl(false);
     });
+
+    var findPartOfDay = function () {
+        var current_time = new Date();
+        var current_hour = current_time.getHours();
+        if (current_hour >= 6  && current_hour < 11){
+            console.log('Morning');
+            return 1;
+        }
+        if (current_hour >= 11 && current_hour < 15){
+            console.log('Afternoon!');
+            return 2;
+        }
+        if (current_hour >= 15 && current_hour < 19 ){
+            console.log('Evening');
+            return 3;
+        }
+        console.log('Night');
+        return 4;
+    };
+
+    var time_of_day = findPartOfDay();
+    $("select[name='time'] option[value="+time_of_day+"]").prop("selected", true);
 </script>
 </body>
 </html>
