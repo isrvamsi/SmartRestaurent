@@ -10,6 +10,7 @@ $.ajaxSetup({
 
 restaurantsData = {};
 box_texts = [];
+var newMarkers = [];
 function createHomepageGoogleMap(_latitude,_longitude){
     setMapHeight();
     if( document.getElementById('map') != null ){
@@ -22,7 +23,6 @@ function createHomepageGoogleMap(_latitude,_longitude){
                 styles: mapStyles
             });
             var i;
-            var newMarkers = [];
 
             for (i = 0; i < locations.length; i++){
                 $.ajax({
@@ -56,6 +56,31 @@ function createHomepageGoogleMap(_latitude,_longitude){
                     infoBoxClearance: new google.maps.Size(1, 1)
                 };
                 box_texts.push(boxText);
+
+                var occupancy_file = locations[i][2];
+                console.log(occupancy_file);
+                var selectedTime = $("select[name='time'] option:selected")[0].value;
+                var selectedDay =  $("select[name='day'] option:selected")[0].value;
+                var restaurantData = restaurantsData[occupancy_file];
+                var occupancy = 'NA';
+                if(restaurantData){
+                    occupancy = restaurantData[selectedDay][selectedTime];
+                }
+                console.log(occupancy);
+
+                var crowded = 'marker-style-white';
+                if(occupancy > 66){
+                    crowded = "marker-style-red";
+                } else if(occupancy > 33){
+                    crowded = "marker-style-yellow";
+                } else if(occupancy > 0) {
+                    crowded = "marker-style-green";
+                }
+
+                if(occupancy !== 'NA'){
+                    occupancy = occupancy + '%';
+                }
+
                 var marker = new MarkerWithLabel({
                     title: locations[i][0],
                     position: new google.maps.LatLng(locations[i][3], locations[i][4]),
@@ -63,17 +88,10 @@ function createHomepageGoogleMap(_latitude,_longitude){
                     icon: 'assets/img/marker.png',
                     labelContent: pictureLabel,
                     labelAnchor: new google.maps.Point(50, 0),
-                    labelClass: "marker-style"
+                    labelClass: crowded
                 });
                 newMarkers.push(marker);
-                var occupancy_file = locations[i][2];
-                console.log(occupancy_file);
-                var occupancy = 'NA';
-                var selectedTime = $("select[name='time'] option:selected")[0].value;
-                var selectedDay =  $("select[name='day'] option:selected")[0].value;
-                var restaurantData = restaurantsData[occupancy_file];
-                occupancy = restaurantData[selectedDay][selectedTime];
-                console.log(occupancy);
+
                 boxText.innerHTML =
                     '<div class="infobox-inner">' +
                         '<a href="' + locations[i][5] + '">' +
@@ -210,11 +228,14 @@ function initMap(propertyId) {
 }
 
 function listener_search_box() {
-    for(var i = 0; i< box_texts.length; i++){
+    for(var i = 0; i< locations.length; i++){
         var selectedTime = $("select[name='time'] option:selected")[0].value;
         var selectedDay =  $("select[name='day'] option:selected")[0].value;
         var restaurantData = restaurantsData[locations[i][2]];
-        var occupancy = restaurantData[selectedDay][selectedTime];
+        var occupancy = 'NA';
+        if(restaurantData){
+            occupancy = restaurantData[selectedDay][selectedTime];
+        }
         console.log(occupancy);
         box_texts[i].innerHTML =
             '<div class="infobox-inner">' +
@@ -228,7 +249,23 @@ function listener_search_box() {
             '<div class="infobox-location">' + locations[i][1] + '</div>' +
             '</div>' +
             '</div>';
+
+        var crowded = 'marker-style-white';
+        if(occupancy > 66){
+            crowded = "marker-style-red";
+        } else if(occupancy > 33){
+            crowded = "marker-style-yellow";
+        } else if(occupancy > 0) {
+            crowded = "marker-style-green";
+        }
+
+        if(occupancy !== 'NA'){
+            occupancy = occupancy + '%';
+        }
+
+        newMarkers[i].labelClass = crowded;
     }
+    google.maps.event.trigger(map, 'resize');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -3743,6 +3743,48 @@ ul.list-links li a:hover {
   margin-left: -17px !important;
   margin-top: -46px !important;
 }
+
+.marker-style-white {
+  border: 3px solid #ffffff;
+  text-align: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-left: -17px !important;
+  margin-top: -46px !important;
+}
+
+.marker-style-red  {
+  border: 3px solid #ff0000;
+  text-align: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-left: -17px !important;
+  margin-top: -46px !important;
+}
+
+.marker-style-yellow  {
+  border: 3px solid #ffff00;
+  text-align: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-left: -17px !important;
+  margin-top: -46px !important;
+}
+
+.marker-style-green {
+  border: 3px solid #00ff00;
+  text-align: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  margin-left: -17px !important;
+  margin-top: -46px !important;
+}
+
+
 .marker-style img {
   position: absolute !important;
   top: -1px !important;

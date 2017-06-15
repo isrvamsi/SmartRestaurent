@@ -1,8 +1,8 @@
 var locations = [
     ['The Anteatery', "4001 Mesa Rd Irvine, CA 92617", "data/anteatery.json", 33.650884, -117.845629, "https://www.yelp.com/biz/the-anteatery-irvine", "assets/img/restaurents/anteatery.jpg", "assets/img/property-types/apartment.png"],
     ['Cha For Tea', "4187 Campus Dr Ste M173 Irvine, CA 92612", "data/cha4tea.json", 33.650670, -117.838981, "https://www.yelp.com/biz/cha-for-tea-irvine-9", "assets/img/restaurents/cha4tea.jpg", "assets/img/property-types/apartment.png"],
-    ['Panda Express', "A232 Student Ctr Irvine, CA 92697", "data/panda.json",33.649212, -117.842492, "https://www.yelp.com/biz/panda-express-irvine-5", "assets/img/restaurents/panda.jpg", "assets/img/property-types/apartment.png"],
-    ['In-N-Out Burger', "4115 Campus Dr Irvine, CA 92612", "data/innout.json", 33.650238, -117.840712, "https://www.yelp.com/biz/in-n-out-burger-irvine?osq=In-N-Out+Burger", "assets/img/restaurents/innout.jpg", "assets/img/property-types/apartment.png"],
+    ['Panda Express', "A232 Student Ctr Irvine, CA 92697", "NA",33.649212, -117.842492, "https://www.yelp.com/biz/panda-express-irvine-5", "assets/img/restaurents/panda.jpg", "assets/img/property-types/apartment.png"],
+    ['In-N-Out Burger', "4115 Campus Dr Irvine, CA 92612", "NA", 33.650238, -117.840712, "https://www.yelp.com/biz/in-n-out-burger-irvine?osq=In-N-Out+Burger", "assets/img/restaurents/innout.jpg", "assets/img/property-types/apartment.png"],
     /*
 	['3398 Lodgeville Road', "Golden Valley, MN 55427", "$28,000", 48.881187, 2.276938, "property-detail.html", "assets/img/properties/property-06.jpg", "assets/img/property-types/garage.png"],
     ['2479 Murphy Court', "Minneapolis, MN 55402", "$36,000", 48.859098, 2.423515, "property-detail.html", "assets/img/properties/property-08.jpg", "assets/img/property-types/houseboat.png"],
